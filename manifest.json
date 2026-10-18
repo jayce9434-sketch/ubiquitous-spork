@@ -1,0 +1,9 @@
+{
+  "name": "Bangerbox 110",
+  "short_name": "Bangerbox",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07080c",
+  "theme_color": "#0a0b10",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]
+}

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0b10" />
+  <meta name="description" content="Bangerbox 110 — a procedural instrumental playlist game with 110 original tracks across 11 genres." />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Bangerbox 110</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <div>
+          <h1>BANGERBOX 110</h1>
+          <p>110 original instrumental tracks</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="shuffleBtn" class="ghost-btn">Shuffle</button>
+        <button id="settingsBtn" class="ghost-btn">Settings</button>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <aside class="sidebar panel">
+        <section class="progress-card">
+          <div class="progress-ring" id="progressRing" aria-label="Discovery progress">
+            <div><strong id="discoveredCount">0</strong><span>/110</span></div>
+          </div>
+          <div>
+            <h2>Discovery</h2>
+            <p id="progressText">Listen to tracks to discover them.</p>
+          </div>
+        </section>
+
+        <label class="search-box">
+          <span>Search</span>
+          <input id="searchInput" type="search" placeholder="Track or genre" autocomplete="off" />
+        </label>
+
+        <div class="section-label">Genres</div>
+        <div id="genreList" class="genre-list"></div>
+
+        <div class="section-label">Minimum rating</div>
+        <div id="ratingFilters" class="rating-filter-row"></div>
+
+        <div class="section-label">Sort</div>
+        <select id="sortSelect" class="select-input">
+          <option value="default">Playlist order</option>
+          <option value="rating">Highest rating</option>
+          <option value="bpm">Fastest BPM</option>
+          <option value="title">Title A-Z</option>
+        </select>
+
+        <button id="favoritesBtn" class="wide-btn">Favorites only: Off</button>
+        <button id="resetFiltersBtn" class="wide-btn secondary">Reset filters</button>
+      </aside>
+
+      <section class="content panel">
+        <div class="content-head">
+          <div>
+            <div class="eyebrow" id="playlistEyebrow">FULL PLAYLIST</div>
+            <h2 id="playlistTitle">All 110 Tracks</h2>
+          </div>
+          <div class="result-count" id="resultCount">110 tracks</div>
+        </div>
+        <div id="trackList" class="track-list" role="list"></div>
+      </section>
+
+      <aside class="now-playing panel">
+        <div class="np-art" id="npArt">
+          <div class="art-grid"></div>
+          <div class="art-core"><span></span></div>
+        </div>
+        <div class="np-meta">
+          <div class="eyebrow" id="npGenre">READY</div>
+          <h2 id="npTitle">Choose a track</h2>
+          <p id="npSub">Original procedural instrumental</p>
+          <div id="npRating" class="rating-display" aria-label="Track rating"></div>
+        </div>
+
+        <canvas id="visualizer" width="560" height="150" aria-label="Audio visualizer"></canvas>
+
+        <div class="timeline">
+          <span id="timeCurrent">0:00</span>
+          <input id="seekBar" type="range" min="0" max="1000" value="0" aria-label="Track position" />
+          <span id="timeTotal">0:00</span>
+        </div>
+
+        <div class="transport">
+          <button id="prevBtn" class="round-btn" aria-label="Previous track">PREV</button>
+          <button id="playBtn" class="play-btn" aria-label="Play">PLAY</button>
+          <button id="nextBtn" class="round-btn" aria-label="Next track">NEXT</button>
+        </div>
+
+        <div class="np-stats">
+          <div><span>BPM</span><strong id="npBpm">--</strong></div>
+          <div><span>KEY</span><strong id="npKey">--</strong></div>
+          <div><span>ENERGY</span><strong id="npEnergy">--</strong></div>
+        </div>
+
+        <button id="favoriteCurrentBtn" class="favorite-current">Add to favorites</button>
+      </aside>
+    </main>
+
+    <footer class="footer-note">
+      <span>Original live synthesis plus custom one-shot SFX. No copyrighted music files.</span>
+      <span id="engineStatus">Audio engine idle</span>
+    </footer>
+  </div>
+
+  <div id="settingsModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div><div class="eyebrow">CONTROL ROOM</div><h2>Settings</h2></div>
+        <button class="close-btn" data-close="settingsModal">Close</button>
+      </div>
+      <div class="settings-grid">
+        <label class="setting-row"><span><strong>Master volume</strong><small>0% to 2000%</small></span><div><input id="volumeRange" type="range" min="0" max="2000" step="10" value="100"><output id="volumeOutput">100%</output></div></label>
+        <label class="setting-row"><span><strong>Auto-next</strong><small>Continue through the playlist</small></span><input id="autoNextToggle" type="checkbox" checked></label>
+        <label class="setting-row"><span><strong>Visualizer</strong><small>Live spectrum bars</small></span><input id="visualizerToggle" type="checkbox" checked></label>
+        <label class="setting-row"><span><strong>Discovery threshold</strong><small>Seconds before a track counts as discovered</small></span><select id="discoverTimeSelect" class="select-input small"><option value="5">5 seconds</option><option value="10" selected>10 seconds</option><option value="15">15 seconds</option><option value="20">20 seconds</option></select></label>
+      </div>
+      <div class="modal-actions">
+        <button id="ownerBtn" class="wide-btn secondary">Owner panel</button>
+        <button id="resetProgressBtn" class="danger-btn">Reset local progress</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ownerModal" class="modal" aria-hidden="true">
+    <div class="modal-card owner-card">
+      <div class="modal-head">
+        <div><div class="eyebrow">RESTRICTED</div><h2>Owner Panel</h2></div>
+        <button class="close-btn" data-close="ownerModal">Close</button>
+      </div>
+      <div id="ownerGate">
+        <p class="owner-copy">Enter the owner code to unlock local test controls.</p>
+        <div class="owner-login"><input id="ownerCode" type="password" placeholder="Owner code" autocomplete="off"><button id="ownerUnlockBtn" class="wide-btn">Unlock</button></div>
+        <p id="ownerError" class="error-text"></p>
+      </div>
+      <div id="ownerControls" class="owner-controls hidden">
+        <button id="unlockAllBtn" class="wide-btn">Discover all 110 tracks</button>
+        <button id="clearDiscoveriesBtn" class="wide-btn secondary">Clear discoveries</button>
+        <button id="favoriteAllFiveBtn" class="wide-btn secondary">Favorite every 5-star track</button>
+        <button id="ownerShuffleBtn" class="wide-btn secondary">Jump to random 5-star track</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
